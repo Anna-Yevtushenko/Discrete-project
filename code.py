@@ -2,10 +2,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import random
 
-edges = [("A", "B"), ("A", "C"), ("B", "C"), ("B", "D"),
-         ("B", "E"), ("C", "D"), ("D", "E")]
-
-
 class Graph:
     def __init__(self, Nodes=None, is_directed=False, num_vertices=0):
         self.nodes = self.__get_nodes(Nodes, num_vertices)
@@ -55,11 +51,16 @@ class Graph:
             del self.adj_list[node]
             self.nodes.remove(node)
 
-    def generate_random_edges(self, p=0.1):
+    def generate_connected_graph(self):
+        # Ensure the graph is not empty
+        if len(self.nodes) == 0:
+            return
+        for i in range(len(self.nodes) - 1):
+            self.add_edge(self.nodes[i], self.nodes[i + 1])
         for i in range(len(self.nodes)):
-            for j in range(i + 1, len(self.nodes)):
-                if random.random() < p:
-                    self.add_edge(i, j)
+            for j in range(i + 2, len(self.nodes)):
+                if random.random() < 0.1:
+                    self.add_edge(self.nodes[i], self.nodes[j])
 
     def visualize_graph(self):
         G = nx.DiGraph() if self.is_directed else nx.Graph()
@@ -69,18 +70,13 @@ class Graph:
             for edge in edges:
                 G.add_edge(node, edge)
 
-        pos = nx.spring_layout(G)  # Positions for all nodes
+        pos = nx.spring_layout(G)
         nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color='#909090', node_size=500, font_size=16, font_weight='bold')
         plt.show()
 
 
-nodes = ["A", "B", "C", "D", "E"]
 # graph = Graph(nodes, is_directed=False)
 graph = Graph(None, is_directed=False, num_vertices=25)
-# for v,e in edges:
-#     graph.add_edge(v,e)
-graph.generate_random_edges()
+graph.generate_connected_graph()
 graph.print_adj()
 graph.visualize_graph()
-# graph.generate_random_edges(40)
-# graph.print_adj()
