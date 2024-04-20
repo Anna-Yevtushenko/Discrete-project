@@ -1,86 +1,63 @@
-import numpy as np
-import networkx as nx
+
+import random
+
+edges = [("A", "B"), ("A", "C"), ("B", "C"), ("B", "D"),
+         ("B", "E"), ("C", "D"), ("D", "E")]
+
 
 class Graph:
-    def __init__(self): # Конструктор класу
-        self.adjacency_list = {}  #порожній словник для списку суміжності вершин
+    def __init__(self, Nodes=None, is_directed=False, num_vertices=0):
+        self.nodes = self.__get_nodes(Nodes, num_vertices)
+        self.adj_list = {}
+        self.is_directed = is_directed
 
-    def add_vertex(self, vertex):# еметод для додавання вершин
-        if vertex not in self.adjacency_list:
-            self.adjacency_list[vertex] = []
+        for node in self.nodes:
+            self.adj_list[node] = []
 
-    def add_edge(self, u, v, weight):# метод додавання ребра
-        if u in self.adjacency_list and v in self.adjacency_list:
-            self.adjacency_list[u].append((v, weight))
+    def __get_nodes(self, Nodes, num_vertices):
+        if Nodes is not None:
+            return Nodes
+        return self.__generate_nodes(num_vertices)
 
-    def get_adjacent_vertices(self, vertex):#метод отримання списку суміжних
-        # вершин для заданої вершини
-        if vertex in self.adjacency_list:
-            return self.adjacency_list[vertex]
-        return []
+    def __generate_nodes(self, num_vertices):
+        nodes = []
+        for i in range(num_vertices):
+            nodes.append(i)
+        return nodes
 
-    def adjacency_matrix(self):
-        # метод для створення матриці суміжності
-        #графа на основі списків суміжності
-        vertices = sorted(self.adjacency_list.keys())
-        vertex_count = len(vertices)
-        matrix = [[0] * vertex_count for _ in range(vertex_count)]
-        vertex_index = {vertex: i for i, vertex in enumerate(vertices)}
+    def add_edge(self, v, e):
+        self.adj_list[v].append(e)
+        if not self.is_directed:
+            self.adj_list[e].append(v)
 
-        for vertex, neighbors in self.adjacency_list.items():
-            for neighbor, weight in neighbors:
-                matrix[vertex_index[vertex]][vertex_index[neighbor]] = weight
+    def degree_vertex(self, node):
+        degree = len(self.adj_list[node])
+        return degree
 
-        return matrix
+    def print_adj(self):
+        for node in self.nodes:
+            print(node, ":", self.adj_list[node])
 
-    def display_adjacency_list(self):#виведення списку суміжності
-        for vertex, neighbors in self.adjacency_list.items():
-            print(f"Vertex {vertex}: {neighbors}")
+    def remove_edge(self, v, e):
+        if e in self.adj_list[v]:
+            self.adj_list[v].remove(e)
+        if not self.is_directed:
+            if v in self.adj_list[e]:
+                self.adj_list[e].remove(v)
 
-#1)Створюємо новий об'єкт класу
-#2)Додаємо вершини та ребра
+    def remove_vertex(self, node):
+        if node in self.adj_list:
+            # Remove all edges from other vertices to this node
+            for adjacent in list(self.adj_list[node]):
+                self.adj_list[adjacent].remove(node)
+            # Finally, remove the vertex itself
+            del self.adj_list[node]
+            self.nodes.remove(node)
 
-graph = Graph()
-graph.add_vertex(1)
-graph.add_vertex(2)
-graph.add_vertex(3)
-graph.add_edge(1, 2, 5)
-graph.add_edge(2, 3, 10)
-graph.add_edge(1, 3, 7)
-
-
-#graph.display_adjacency_list()#виведення списку суміжності
-
-
-# Отримання та виведення матриці суміжності
-adj_matrix = graph.adjacency_matrix()
-print("\nAdjacency Matrix:")
-for row in adj_matrix:
-    print(row)
-
-
-def generate_graph(num_vertices, edge_density, weight_range=(1, 10)):
-    max_edges = num_vertices * (num_vertices - 1)
-    num_edges = int(edge_density * max_edges)
-    graph = nx.DiGraph()
-    graph.add_nodes_from(range(num_vertices))
-
-    for _ in range(num_edges):
-        u, v = np.random.randint(0, num_vertices, size=2)
-        weight = np.random.randint(*weight_range)
-        graph.add_edge(u, v, weight=weight)
-
-    return graph
-
-
-
-graph_size = 10  # Розмір графа
-graph_density = 0.3  # Щільність графа
-weight_range = (1, 10)  # Діапазон ваги ребер
-
-
-graph = generate_graph(graph_size, graph_density, weight_range)
-
-
+    def generate_random_edges(self, p=0.1):
+        for i in range(len(self.nodes)):
+            for j in range(i + 1, len(self.nodes)):
+                if random.random() < p:
+                    self.add_edge(i, j)
 
 
