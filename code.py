@@ -48,3 +48,39 @@ graph.add_edge(1, 2, 5)
 graph.add_edge(2, 3, 10)
 graph.add_edge(1, 3, 7)
 
+
+#graph.display_adjacency_list()#виведення списку суміжності
+
+
+# Отримання та виведення матриці суміжності
+adj_matrix = graph.adjacency_matrix()
+print("\nAdjacency Matrix:")
+for row in adj_matrix:
+    print(row)
+
+
+def generate_graph(num_vertices, edge_density, weight_range=(1, 10)):
+    max_edges = num_vertices * (num_vertices - 1)
+    num_edges = int(edge_density * max_edges)
+    graph = nx.DiGraph()
+    graph.add_nodes_from(range(num_vertices))
+
+    for _ in range(num_edges):
+        u, v = np.random.randint(0, num_vertices, size=2)
+        weight = np.random.randint(*weight_range)
+        graph.add_edge(u, v, weight=weight)
+
+    return graph
+
+
+
+graph_size = 10  # Розмір графа
+graph_density = 0.3  # Щільність графа
+weight_range = (1, 10)  # Діапазон ваги ребер
+
+
+graph = generate_graph(graph_size, graph_density, weight_range)
+
+
+
+
