@@ -1,1 +1,3 @@
 # Discrete-project
+Алгоритм Джонсона
+
