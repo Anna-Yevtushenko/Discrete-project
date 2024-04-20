@@ -1,4 +1,5 @@
-
+import matplotlib.pyplot as plt
+import networkx as nx
 import random
 
 edges = [("A", "B"), ("A", "C"), ("B", "C"), ("B", "D"),
@@ -60,4 +61,26 @@ class Graph:
                 if random.random() < p:
                     self.add_edge(i, j)
 
+    def visualize_graph(self):
+        G = nx.DiGraph() if self.is_directed else nx.Graph()
+        for node in self.nodes:
+            G.add_node(node)
+        for node, edges in self.adj_list.items():
+            for edge in edges:
+                G.add_edge(node, edge)
 
+        pos = nx.spring_layout(G)  # Positions for all nodes
+        nx.draw(G, pos, with_labels=True, node_color='lightblue', edge_color='#909090', node_size=500, font_size=16, font_weight='bold')
+        plt.show()
+
+
+nodes = ["A", "B", "C", "D", "E"]
+# graph = Graph(nodes, is_directed=False)
+graph = Graph(None, is_directed=False, num_vertices=25)
+# for v,e in edges:
+#     graph.add_edge(v,e)
+graph.generate_random_edges()
+graph.print_adj()
+graph.visualize_graph()
+# graph.generate_random_edges(40)
+# graph.print_adj()
