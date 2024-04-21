@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import random
 from heapq import heappop, heappush
+import time
 
 
 class Graph:
@@ -126,17 +127,25 @@ start, num_vertices, end, density = get_user_input()
 graph = Graph(None, is_directed=True, num_vertices=num_vertices)
 graph.generate_connected_graph(density)
 graph.print_adj()
+start_time = time.time()  # Засікаємо час перед виконанням алгоритму
 
+# Виконуємо алгоритм
 distances = graph.bellman_ford(start)
+shortest_paths = graph.johnson()
+
+end_time = time.time()  # Засікаємо час після виконання алгоритму
+
+# Виводимо час виконання
+print("Час виконання: {} секунд".format(end_time - start_time))
+
 print("Відстані від початкової точки до інших вершин: ", distances)
 
-shortest_paths = graph.johnson()
 if shortest_paths is not None:
     print("Найкоротші шляхи від кожної вершини до інших: ", shortest_paths)
 
     if end in shortest_paths[start] and shortest_paths[start][end] != float('inf'):
         print("Найкоротший шлях від {} до {}: ".format(start, end), shortest_paths[start][end])
     else:
-        print("Шлях від {} до {} не існує..".format(start, end))
+        print("Шлях від {} до {} не існує.".format(start, end))
 
     graph.visualize_graph()
