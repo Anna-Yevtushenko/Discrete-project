@@ -70,7 +70,7 @@ class Graph:
         distance = {node: float('inf') for node in self.nodes} # Створюємо словник для зберігання відстаней від поч.вершини до кожної вершини
         distance[source] = 0 # встановлюємо відстань від поч.вершини до самої себе рівну нулю
 
-        for _ in range(len(self.nodes) - 1): # проводимо ітерації ,щоб знайти найкоротші шляхи
+        for i in range(len(self.nodes) - 1): # проводимо ітерації ,щоб знайти найкоротші шляхи
             for node in self.nodes: # проходимося по кожній вершині граф
                 for neighbour, weight in self.adj_list[node]: # якщо шлях до сусідньої вершини коротший, то оновлюємо відстань
                     if distance[node] != float('inf') and distance[node] + weight < distance[neighbour]:
